@@ -948,7 +948,8 @@ public final class URL implements Serializable {
             return this;
         }
         // if value doesn't change, return immediately
-        if (value.equals(getParameters().get(key))) { // value != null
+        if (value.equals(getParameters().get(key))) {
+            // value != null
             return this;
         }
 

@@ -145,8 +145,12 @@ public abstract class AbstractConfig implements Serializable {
         for (Method method : methods) {
             try {
                 String name = method.getName();
-                if (name.length() > 3 && name.startsWith("set") && Modifier.isPublic(method.getModifiers()) // 方法是 public 的 setting 方法。
-                        && method.getParameterTypes().length == 1 && isPrimitive(method.getParameterTypes()[0])) { // 方法的唯一参数是基本数据类型
+                if (name.length() > 3 && name.startsWith("set") &&
+                    // 方法是 public 的 setting 方法。
+                    Modifier.isPublic(method.getModifiers())
+                    && method.getParameterTypes().length == 1
+                    // 方法的唯一参数是基本数据类型
+                    && isPrimitive(method.getParameterTypes()[0])) {
                     // 获得属性名，例如 `ApplicationConfig#setName(...)` 方法，对应的属性名为 name 。
                     String property = StringUtils.camelToSplitName(name.substring(3, 4).toLowerCase() + name.substring(4), ".");
 

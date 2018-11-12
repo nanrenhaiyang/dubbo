@@ -65,8 +65,8 @@ import static com.alibaba.dubbo.common.utils.NetUtils.isInvalidPort;
 /**
  * ServiceConfig
  *
- * 服务提供者暴露服务配置。
- * 参数详细：http://dubbo.io/books/dubbo-user-book/references/xml/dubbo-service.html
+ * 服务提供者暴露服务配置。详细对应 dubbo 文档的
+ * dubbo:service:http://dubbo.apache.org/zh-cn/docs/user/references/xml/dubbo-service.html
  *
  * @export
  */
@@ -492,7 +492,8 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         // 将各种配置对象，添加到 `map` 集合中。
         appendParameters(map, application);
         appendParameters(map, module);
-        appendParameters(map, provider, Constants.DEFAULT_KEY); // ProviderConfig ，为 ServiceConfig 的默认属性，因此添加 `default` 属性前缀。
+        // ProviderConfig ，为 ServiceConfig 的默认属性，因此添加 `default` 属性前缀。
+        appendParameters(map, provider, Constants.DEFAULT_KEY);
         appendParameters(map, protocolConfig);
         appendParameters(map, this);
         // 将 MethodConfig 对象数组，添加到 `map` 集合中。

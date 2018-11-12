@@ -130,6 +130,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
             String address = ConfigUtils.getProperty("dubbo.registry.address");
             if (address != null && address.length() > 0) {
                 registries = new ArrayList<RegistryConfig>();
+                // 以 | 分割多个注册中心
                 String[] as = address.split("\\s*[|]+\\s*");
                 for (String a : as) {
                     RegistryConfig registryConfig = new RegistryConfig();
@@ -199,19 +200,20 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
         List<URL> registryList = new ArrayList<URL>();
         if (registries != null && !registries.isEmpty()) {
             for (RegistryConfig config : registries) {
-                // 获得注册中心的地址
+                // 先从配置，获得注册中心的地址
                 String address = config.getAddress();
                 if (address == null || address.length() == 0) {
                     address = Constants.ANYHOST_VALUE;
                 }
-                String sysaddress = System.getProperty("dubbo.registry.address"); // 从启动参数读取
-                if (sysaddress != null && sysaddress.length() > 0) {
-                    address = sysaddress;
+                // 从启动参数读取，覆盖本地配置
+                String sysAddress = System.getProperty("dubbo.registry.address");
+                if (sysAddress != null && sysAddress.length() > 0) {
+                    address = sysAddress;
                 }
                 // 有效的地址
                 if (address.length() > 0
                         && !RegistryConfig.NO_AVAILABLE.equalsIgnoreCase(address)) {
-                    Map<String, String> map = new HashMap<String, String>();
+                    Map<String, String> map = new HashMap<String, String>(10);
                     // 将各种配置对象，添加到 `map` 集合中。
                     appendParameters(map, application);
                     appendParameters(map, config);
@@ -224,7 +226,8 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
                     }
                     // 若不存在 `protocol` 参数，默认 "dubbo" 添加到 `map` 集合中。
                     if (!map.containsKey("protocol")) {
-                        if (ExtensionLoader.getExtensionLoader(RegistryFactory.class).hasExtension("remote")) { // "remote"
+                        // "remote"
+                        if (ExtensionLoader.getExtensionLoader(RegistryFactory.class).hasExtension("remote")) {
                             map.put("protocol", "remote");
                         } else {
                             map.put("protocol", "dubbo");
@@ -238,8 +241,10 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
                         url = url.addParameter(Constants.REGISTRY_KEY, url.getProtocol());
                         url = url.setProtocol(Constants.REGISTRY_PROTOCOL);
                         // 添加到结果
-                        if ((provider && url.getParameter(Constants.REGISTER_KEY, true)) // 服务提供者 && 注册 https://dubbo.gitbooks.io/dubbo-user-book/demos/subscribe-only.html
-                                || (!provider && url.getParameter(Constants.SUBSCRIBE_KEY, true))) { // 服务消费者 && 订阅 https://dubbo.gitbooks.io/dubbo-user-book/demos/registry-only.html
+                        if ((provider && url.getParameter(Constants.REGISTER_KEY, true))
+                            // 服务提供者 && 注册 https://dubbo.gitbooks.io/dubbo-user-book/demos/subscribe-only.html
+                                || (!provider && url.getParameter(Constants.SUBSCRIBE_KEY, true))) {
+                            // 服务消费者 && 订阅 https://dubbo.gitbooks.io/dubbo-user-book/demos/registry-only.html
                             registryList.add(url);
                         }
                     }

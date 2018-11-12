@@ -66,7 +66,8 @@ public class UrlUtils {
         // 从 `defaults` 中，获得 "protocol" "username" "password" "host" "port" "path" 到 `defaultXXX` 属性种。
         // 因为，在 Dubbo URL 中，这几个是独立的属性，不在 `Dubbo.parameters` 属性中。
         String defaultProtocol = defaults == null ? null : defaults.get("protocol");
-        if (defaultProtocol == null || defaultProtocol.length() == 0) { // 如果地址没有协议缺省为 dubbo
+        if (defaultProtocol == null || defaultProtocol.length() == 0) {
+            // 如果地址没有协议缺省为 dubbo
             defaultProtocol = "dubbo";
         }
         String defaultUsername = defaults == null ? null : defaults.get("username");
@@ -74,7 +75,8 @@ public class UrlUtils {
         int defaultPort = StringUtils.parseInteger(defaults == null ? null : defaults.get("port"));
         String defaultPath = defaults == null ? null : defaults.get("path");
         Map<String, String> defaultParameters = defaults == null ? null : new HashMap<String, String>(defaults);
-        if (defaultParameters != null) { // 需要移除，因为这几个是独立属性。
+        // 需要移除，因为这几个是独立属性。
+        if (defaultParameters != null) {
             defaultParameters.remove("protocol");
             defaultParameters.remove("username");
             defaultParameters.remove("password");
@@ -85,7 +87,8 @@ public class UrlUtils {
         // 创建 Dubbo URL 。
         URL u = URL.valueOf(url);
         // 若 `u` 的属性存在非空的情况下，从 `defaultXXX` 属性，赋值到 `u` 的属性中。
-        boolean changed = false; // 是否改变，即从 `defaultXXX` 属性，赋值到 `u` 的属性中。
+        boolean changed = false;
+        // 是否改变，即从 `defaultXXX` 属性，赋值到 `u` 的属性中。
         String protocol = u.getProtocol();
         String username = u.getUsername();
         String password = u.getPassword();
